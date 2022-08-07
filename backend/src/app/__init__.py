@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from routers import home
+from routers import home, users
 
 def create_app() -> FastAPI:
     app = FastAPI()
@@ -16,4 +16,5 @@ def create_app() -> FastAPI:
         allow_headers=["*"]
     )
     app.include_router(home.router)
+    app.include_router(users.router)
     return app
