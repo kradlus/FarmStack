@@ -8,3 +8,4 @@ async def home_root():
     return JSONResponse(status_code=200, content={
         "detail":"Working"
     })
+
