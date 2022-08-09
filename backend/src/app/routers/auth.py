@@ -14,7 +14,7 @@ async def auth_register(auth:RegisterModel = Body()) -> JSONResponse:
         "message":f"User {auth.username} created!"
     })
 
-@router.post("/login", response_model_exclude={"password_hash"})
+@router.post("/login")
 async def auth_login(auth:LoginModel = Body()) -> JSONResponse:
     user:User = User(**await db_find_one(FindOneModel.from_orm(auth)))
     if not bcrypt.verify(auth.password, user.password):
