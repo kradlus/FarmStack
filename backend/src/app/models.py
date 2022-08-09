@@ -1,17 +1,29 @@
 from uuid import UUID
-from pydantic import BaseModel
+from fastapi import status
+from fastapi.exceptions import HTTPException 
+from pydantic import BaseModel, validator
 from passlib.hash import bcrypt
 
 class User(BaseModel):
     id:UUID
     username:str
-    password_hash:str
+    password:str
 
-    @property
-    def password(self) -> str:
-        return getattr(self, 'password_hash', None)
+class AuthModel(BaseModel):
+    username:str
+    password:str
 
-    @password.setter
-    def password(self, new_password:str) -> None:
-        password_hash = bcrypt.using(rounds=10).hash(new_password)
-        setattr(self, 'password_hash', password_hash)
+class RegisterModel(BaseModel):
+    @validator("password")
+    @classmethod
+    def password(cls, v):
+        if len(v) < 8:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail={"messaeg":"The password is too weak"}
+            )
+        # TODO: other security checks here
+        return bcrypt.using(rounds=10).hash(v)
+
+class LoginModel(AuthModel):
+    pass
