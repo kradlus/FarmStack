@@ -1,17 +1,29 @@
-from uuid import UUID
 from fastapi import status
-from fastapi.exceptions import HTTPException 
-from pydantic import BaseModel, validator
+from fastapi.exceptions import HTTPException
+from pydantic import BaseModel, validator, Field
 from passlib.hash import bcrypt
-
-class User(BaseModel):
-    id:UUID
-    username:str
-    password:str
+from bson.objectid import ObjectId
 
 class AuthModel(BaseModel):
     username:str
     password:str
+
+class User(AuthModel):
+    id:ObjectId = Field(..., alias="_id")
+
+    class Config:
+        orm_mode = True
+        arbitrary_types_allowed = True
+        json_encoders = {ObjectId:str}
+
+    @validator("id")
+    @classmethod
+    def id_validator(cls, v):
+        if not ObjectId.is_valid(v):
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail={
+                "message":"ObjectId invalid"
+            })
+        return ObjectId(v)
 
 class RegisterModel(AuthModel):
     @validator("password")
@@ -27,3 +39,9 @@ class RegisterModel(AuthModel):
 
 class LoginModel(AuthModel):
     pass
+
+class FindOneModel(BaseModel):
+    username:str
+
+    class Config:
+        orm_mode = True
