@@ -2,17 +2,13 @@ from fastapi import APIRouter, status, Body
 from fastapi.responses import JSONResponse
 
 from app.models import LoginModel, RegisterModel
+from app.database import db_insert_one
 
 router:APIRouter = APIRouter(prefix="/auth")
 
-@router.get("/login")
-async def auth_login() -> JSONResponse:
-    return JSONResponse(status_code=status.HTTP_200_OK, content={
-        "message":"Provide username and password"
-    })
-
 @router.post("/register")
 async def auth_register(auth:RegisterModel = Body()) -> JSONResponse:
+    await db_insert_one(auth)
     return JSONResponse(status_code=status.HTTP_201_CREATED, content={
         "message":f"User {auth.username} created!"
     })

@@ -9,6 +9,7 @@ hypercorn = "*"
 pydantic = "*"
 python-dotenv = "*"
 passlib = "*"
+motor = "*"
 
 [dev-packages]
 
