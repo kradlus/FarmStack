@@ -13,10 +13,10 @@ class AuthModel(BaseModel):
     username:str
     password:str
 
-class RegisterModel(BaseModel):
+class RegisterModel(AuthModel):
     @validator("password")
     @classmethod
-    def password(cls, v):
+    def password_validator(cls, v):
         if len(v) < 8:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
