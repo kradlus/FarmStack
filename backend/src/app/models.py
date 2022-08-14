@@ -3,6 +3,7 @@ from fastapi.exceptions import HTTPException
 from pydantic import BaseModel, validator, Field
 from passlib.hash import bcrypt
 from bson.objectid import ObjectId
+from typing import Union
 
 class AuthModel(BaseModel):
     username:str
@@ -10,6 +11,7 @@ class AuthModel(BaseModel):
 
 class User(AuthModel):
     id:ObjectId = Field(..., alias="_id")
+    disabled:Union[bool, None] = None
 
     class Config:
         orm_mode = True
@@ -45,3 +47,10 @@ class FindOneModel(BaseModel):
 
     class Config:
         orm_mode = True
+
+class TokenData(BaseModel):
+    username:Union[str, None] = None
+
+class Token(BaseModel):
+    access_token: Union[str, None]
+    token_type: Union[str, None]

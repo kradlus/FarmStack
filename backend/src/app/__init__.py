@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.routers import home
 from app.routers import auth
 
+
 def create_app() -> FastAPI:
     app = FastAPI()
     app.add_middleware(

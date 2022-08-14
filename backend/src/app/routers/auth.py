@@ -1,10 +1,13 @@
-from fastapi import APIRouter, status, Body
+from fastapi import APIRouter, status, Body, Depends
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import HTTPException
-from app.models import LoginModel, RegisterModel, FindOneModel, User
-from app.database import db_insert_one, db_find_one
-from passlib.hash import bcrypt
-from typing import Optional
+from fastapi.security import OAuth2PasswordRequestForm
+from datetime import timedelta
+
+from app.models import Token, RegisterModel, User
+from app.database import db_insert_one
+from app.utils import authenticate_user, create_access_token
+
 
 router:APIRouter = APIRouter(prefix="/auth")
 
@@ -15,15 +18,18 @@ async def auth_register(auth:RegisterModel = Body()) -> JSONResponse:
         "message":f"User {auth.username} created!"
     })
 
-@router.post("/login")
-async def auth_login(auth:LoginModel = Body()) -> JSONResponse:
-    model = await db_find_one(FindOneModel.from_orm(auth))
-    user:Optional[User] = None if not model else User(**model)
-    if not user or not bcrypt.verify(auth.password, user.password):
+@router.post("/login", response_model=Token)
+async def auth_login(form_data: OAuth2PasswordRequestForm = Depends()) -> JSONResponse:    
+    user:User = await authenticate_user(form_data.username, form_data.password)
+    if not user:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail={"message":"Invalid username or password"}
         )
+    access_token_expires = timedelta(minutes=30)
+    access_token = create_access_token(
+        data={"sub": user.username}, expires_delta=access_token_expires
+    )
     return JSONResponse(status_code=status.HTTP_200_OK, content={
-        "token":"" # Implement
+        "token":access_token, "token_type":"bearer"
     })
