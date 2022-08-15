@@ -1,5 +1,5 @@
 from motor.motor_asyncio import AsyncIOMotorClient
-from app.models import AuthModel, FindOneModel
+from app.models import AuthModel, SearchModel
 from typing import Dict, Optional, Union, Sequence
 
 
@@ -14,8 +14,10 @@ class DBManager(AsyncIOMotorClient):
             return f"mongodb://{username}:{password}@{ip}/"
         return db_url
 
-    async def db_find_one(self, obj: FindOneModel) -> Optional[Dict]:
-        return await self.db.farm.find_one(obj.dict())
+    async def db_find_one(self, obj: SearchModel, collection:str = "farm") -> Optional[Dict]:
+        if collection != "farm":
+            return await self.db[collection].find_one({"user":{"$regex":f"(?i){str(obj)}"}})
+        return await self.db[collection].find_one(obj.dict())
 
-    async def db_insert_one(self, obj: AuthModel) -> Dict:
-        return self.db.insert_one(obj.dict())
+    async def db_insert_one(self, obj: AuthModel, collection:str = "farm") -> Dict:
+        return self.db[collection].insert_one(obj.dict())

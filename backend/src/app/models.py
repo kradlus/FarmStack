@@ -47,13 +47,19 @@ class RegisterModel(AuthModel):
 class LoginModel(AuthModel):
     pass
 
-
-class FindOneModel(BaseModel):
-    username: str
-
+class SearchModel(BaseModel):
+    
     class Config:
         orm_mode = True
 
+class FindOneUsernameModel(SearchModel):
+    username: str
+
+class FindOneUserModel(SearchModel):
+    user: str
+
+    def __str__(self) -> str:
+        return self.user
 
 class TokenData(BaseModel):
     username: Union[str, None] = None

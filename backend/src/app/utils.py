@@ -10,7 +10,7 @@ from fastapi.security import OAuth2PasswordBearer
 from datetime import datetime, timedelta
 
 from app.database import DBManager
-from app.models import FindOneModel, User, TokenData
+from app.models import FindOneUsernameModel, User, TokenData
 
 load_dotenv()
 
@@ -29,7 +29,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
 
 async def authenticate_user(username: str, hashed_password: str) -> Union[bool, User]:
-    model = await db.db_find_one(FindOneModel(username=username))
+    model = await db.db_find_one(FindOneUsernameModel(username=username))
     user: Optional[User] = None if not model else User(**model)
     if not user or not bcrypt.verify(hashed_password, user.password):
         return False
@@ -48,10 +48,9 @@ async def get_current_user(token: str = Depends(oauth2_scheme)) -> User:
         if username is None:
             raise credentials_exception
         token_data = TokenData(username=username)
-    except JWTError as e:
-        print(str(e))
+    except JWTError:
         raise credentials_exception
-    user = await db.db_find_one(FindOneModel(username=token_data.username))
+    user = await db.db_find_one(FindOneUsernameModel(username=token_data.username))
     if not user:
         raise credentials_exception
     return User(**user)
