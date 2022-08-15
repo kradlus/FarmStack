@@ -9,9 +9,6 @@ import { defineComponent } from 'vue';
 
 export default defineComponent({
     name: "App",
-    created() {
-      console.log(this.$cookies.get("session"))
-    }
 });
 </script>
 
