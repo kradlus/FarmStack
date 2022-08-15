@@ -5,15 +5,15 @@ from fastapi.security import OAuth2PasswordRequestForm
 from datetime import timedelta
 
 from app.models import Token, RegisterModel, User
-from app.database import db_insert_one
-from app.utils import authenticate_user, create_access_token
+from app.database import DBManager
+from app.utils import authenticate_user, create_access_token, get_db_creds
 
-
+db = DBManager(get_db_creds())
 router:APIRouter = APIRouter(prefix="/auth")
 
 @router.post("/register")
 async def auth_register(auth:RegisterModel = Body()) -> JSONResponse:
-    await db_insert_one(auth)
+    await db.db_insert_one(auth)
     return JSONResponse(status_code=status.HTTP_201_CREATED, content={
         "message":f"User {auth.username} created!"
     })

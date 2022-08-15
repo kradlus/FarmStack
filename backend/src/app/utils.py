@@ -1,21 +1,32 @@
+import os
 import secrets
+from dotenv import load_dotenv
 from fastapi import Depends, status
 from fastapi.exceptions import HTTPException
-from typing import Optional, Union
+from typing import Optional, Union, Tuple
 from passlib.hash import bcrypt
 from jose import JWTError, jwt
 from fastapi.security import OAuth2PasswordBearer
 from datetime import datetime, timedelta
 
-from app.database import db_find_one
+from app.database import DBManager
 from app.models import FindOneModel, User, TokenData
 
+load_dotenv()
 
+def get_db_creds() -> Tuple[str, str, str]:
+    return (
+        os.environ.get("MONGO_USERNAME"), 
+        os.environ.get("MONGO_PASSWORD"),
+        os.environ.get("MONGO_HOST")
+    )
+
+db = DBManager(get_db_creds())
 SECRET_KEY = str(secrets.token_hex(16))
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
 async def authenticate_user(username:str, hashed_password:str) -> Union[bool, User]:
-    model = await db_find_one(FindOneModel(username=username))
+    model = await db.db_find_one(FindOneModel(username=username))
     user:Optional[User] = None if not model else User(**model)
     if not user or not bcrypt.verify(hashed_password, user.password):
         return False
@@ -36,7 +47,8 @@ async def get_current_user(token:str = Depends(oauth2_scheme)) -> User:
     except JWTError as e:
         print(str(e))
         raise credentials_exception
-    user = await db_find_one(FindOneModel(username=token_data.username))
+    # user = await db_find_one(FindOneModel(username=token_data.username))
+    user = await db.db_find_one(FindOneModel(username=token_data.username))
     if not user:
         raise credentials_exception
     return User(**user)
