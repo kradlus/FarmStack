@@ -1,3 +1,5 @@
 docker-compose.yml
 mongo/
 backend/src/app/.env
+frontend/node_modules/
+frontend/package-lock.json
