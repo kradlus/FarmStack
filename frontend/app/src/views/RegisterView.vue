@@ -9,7 +9,7 @@
       <label for="password">Password</label>
         <input v-model="password" type="password" name="password" id="password" placeholder="Password" class="form-control">
     </div>
-    <input type="submit" value="Login" class="btn btn-success fw-bold" @click="makeRegistration">
+    <input type="submit" value="Register" class="btn btn-success fw-bold" @click="makeRegistration">
     <button class="btn btn-warning my-3" @click="() => $router.push('/login')">Login</button>
     <p v-if="isError" class="my-5">There was an error while registering the user</p>
   </form>
@@ -31,7 +31,7 @@ export default defineComponent({
         let formData = new FormData();
         formData.append("username", this.username);
         formData.append("password", this.password);
-        httpService.userRegistration(formData).then(response => {
+        httpService.userRegistration(formData).then(() => {
             this.$router.push("/login");
         }).catch(() => (this.isError = true))
       }

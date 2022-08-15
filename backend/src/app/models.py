@@ -1,4 +1,4 @@
-from fastapi import status
+from fastapi import status, Form
 from fastapi.exceptions import HTTPException
 from pydantic import BaseModel, validator, Field
 from passlib.hash import bcrypt
@@ -43,6 +43,9 @@ class RegisterModel(AuthModel):
         # TODO: other security checks here
         return bcrypt.using(rounds=10).hash(v)
 
+    @classmethod
+    def as_form(cls, username:str = Form(), password:str = Form()) -> "RegisterModel":
+        return cls(username=username, password=password)
 
 class LoginModel(AuthModel):
     pass

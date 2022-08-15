@@ -13,7 +13,7 @@ router: APIRouter = APIRouter(prefix="/auth")
 
 
 @router.post("/register")
-async def auth_register(auth: RegisterModel = Body()) -> JSONResponse:
+async def auth_register(auth: RegisterModel = Depends(RegisterModel.as_form)) -> JSONResponse:
     await db.db_insert_one(auth)
     return JSONResponse(
         status_code=status.HTTP_201_CREATED,
