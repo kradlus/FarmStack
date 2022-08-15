@@ -1,6 +1,6 @@
 # **FarmStackWithVue** - Just a boilerplate
 
-This repository uses FastAPI (https://github.com/tiangolo/fastapi) for the backend environment. The environment includes mongodb interaction and JWT authentication. For the frontend part the code is using VueJS (https://vuejs.org/) which is a great frontend framework that helps building frontend application in a secure and fast way.
+This repository uses [FastAPI](https://github.com/tiangolo/fastapi) for the backend environment. The environment includes mongodb interaction and JWT authentication. For the frontend part the code uses [VueJS](https://vuejs.org/) which is a great frontend framework that helps building frontend application in a secure and fast way.
 
 ## **Usage**
 
@@ -22,7 +22,7 @@ To install backend dependencies:
 
 `--ignore-pipfile` here is used in order to force pipenv to not download the latest versions of the packages from the pipfile, and instead take the fixed versions in the file `Pipfile.lock` and avoid compatibility issues.
 
-Also the backend needs a mongodb server to store data; for test purposes I used the mongodb docker container from https://hub.docker.com/_/mongo.
+Also the backend needs a mongodb server to store data; for test purposes I used the mongodb docker container from [Docker Mongo](https://hub.docker.com/_/mongo).
 
 Below the files to reproduce the docker environment:
 
