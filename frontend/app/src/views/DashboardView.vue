@@ -48,7 +48,7 @@ export default defineComponent({
             this.search = "";
             this.searching = true;
             httpService.getUser(search).then(response => {
-                const user = response.data.user.split(" ");
+                let user = response.data.user.user.split(" ");
                 this.userObj = { "username": user[0], "password": user[1] };
             }).catch(err => {
                 console.log(err);
