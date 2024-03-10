@@ -1,4 +1,4 @@
-# **FarmStackWithVue** - Just a boilerplate
+# **FarmStack** - Just a boilerplate
 
 This repository uses [FastAPI](https://github.com/tiangolo/fastapi) for the backend environment. The environment includes mongodb interaction and JWT authentication. For the frontend part the code uses [VueJS](https://vuejs.org/) which is a great frontend framework that helps building frontend application in a secure and fast way.
 
@@ -7,7 +7,7 @@ This repository uses [FastAPI](https://github.com/tiangolo/fastapi) for the back
 Clone the repository
 
 ```bash
-    git clone https://github.com/kradlus/FarmStackWithVue
+    git clone https://github.com/kradlus/FarmStack
 ```
 
 ### **Backend**
